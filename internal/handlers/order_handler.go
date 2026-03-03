@@ -57,3 +57,46 @@ func (h *OrderHandler) GetOrders(c *gin.Context) {
 	h.DB.Find(&orders)
 	c.JSON(http.StatusOK, orders)
 }
+
+// GetOrder get order by ID
+func (h *OrderHandler) GetOrder(c *gin.Context) {
+	id := c.Param("id")
+	var order models.Order
+	if err := h.DB.First(&order, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Không tìm thấy đơn hàng"})
+		return
+	}
+	c.JSON(http.StatusOK, order)
+}
+
+// UpdateOrder update order by ID (not implemented in this example, but you can add if needed)
+func (h *OrderHandler) UpdateOrder(c *gin.Context) {
+	id := c.Param("id")
+	var order models.Order
+	if err := h.DB.First(&order, id).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Đơn hàng không tồn tại"})
+		return
+	}
+
+	var input struct {
+		CustomerName string  `json:"customer_name"`
+		Amount       float64 `json:"amount"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	h.DB.Model(&order).Updates(input)
+	c.JSON(http.StatusOK, order)
+}
+
+// DeleteOrder soft delete order by ID (not implemented in this example, but you can add if needed)
+func (h *OrderHandler) DeleteOrder(c *gin.Context) {
+	id := c.Param("id")
+	if err := h.DB.Delete(&models.Order{}, id).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Lỗi khi xóa đơn hàng"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Đã xóa đơn hàng #" + id})
+}
