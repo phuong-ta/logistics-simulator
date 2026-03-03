@@ -3,5 +3,5 @@ services:
     name: go
     runtime: go
     plan: free
-    buildCommand: go build -tags netgo -ldflags '-s -w' -o app
-    startCommand: ./app
+    buildCommand: go build -tags netgo -ldflags '-s -w' -o app/cmd/api/ ./cmd/api/
+    startCommand: ./app/cmd/api/
