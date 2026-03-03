@@ -30,8 +30,13 @@ func main() {
 
 	router.POST("/orders", orderHandler.CreateOrder)
 	router.GET("/orders", orderHandler.GetOrders)
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"message": "pong",
+		})
+	})
 
 	// 6. Chạy Server ở port 8080
-	log.Println("Server đang chạy tại port 8080...")
-	router.Run(":8080")
+	log.Println("is running")
+	router.Run()
 }
